@@ -1,0 +1,174 @@
+;; .stumpwmrc file
+;;
+
+(in-package :stumpwm)
+
+(define-key stumpwm:*top-map* (stumpwm:kbd "F12") "mode-line")
+(set-prefix-key (kbd "C-q"))
+(setf *mouse-focus-policy* :click)
+
+(defvar *beskjeder* 
+  (list
+   "Live long and prosper"
+   "By your command"
+   "The needs of the many outweigh the needs of the few, or the one"
+   "Build a Man a Fire, and He'll Be Warm for a Day. Set a Man on Fire, and He'll Be Warm for the Rest of His Life."
+   "Hang on to your REPLs, here we go ... "
+   "The REPL Alliance"
+   "Imperious Leader"
+   )
+)
+
+
+(set-font "-b&h-lucidatypewriter-medium-r-normal-sans-10-100-75-75-m-60-iso8859-1")
+(setf *window-border-style* :thin)
+
+;; Load swank.
+;; *prefix-key* ; swank will kick this off
+(load "/home/ogrim/.emacs.d/lib/slime/swank-loader.lisp")
+(swank-loader:init)
+(defcommand swank () ()
+ (setf stumpwm:*top-level-error-action* :break)
+ (swank:create-server :port 4006
+                      :style swank:*communication-style*
+                      :dont-close t)
+ (echo-string (current-screen) 
+	       "Starting swank. M-x slime-connect RET RET, then (in-package stumpwm)."))
+(swank)
+
+(defun get-random-msg (list) 
+  (setf *random-state* (make-random-state t))
+  (nth (random (length list)) list))
+
+
+;(get-random-msg *beskjeder*)
+
+(load "/home/ogrim/sites/stumpwm-goodies/multimedia-keys.lisp")
+(load "/home/ogrim/sites/stumpwm-goodies/mode-line/modeline-config.lisp")
+;; Modeline Group Scrolling
+(setf stumpwm:*mode-line-click-hook*
+      (list (lambda (&rest args)
+	      (cond ((eq (second args) 5)
+		     (run-commands "gnext"))
+		    ((eq (second args) 4)
+		     (run-commands "gprev"))))))
+
+
+(defcommand opera () () 
+  "Run or switch to Opera."
+  (run-or-raise "opera" '(:class "Opera")))
+
+(defcommand spotify () ()
+  "Run or switch to Spotify"
+  (run-or-raise "spotify" '(:class "Spotify")))
+
+(defcommand emacs () ()
+  "Start Emacs or switch to it, if it is already running."
+  (run-or-raise "emacsclient -c" '(:class "Emacs")))
+
+(defcommand restart-emacs () ()
+  "Kill the Emacs process, and start it in daemon mode"
+  (stumpwm::run-shell-command "killall emacs")
+  (stumpwm::run-shell-command "emacs --daemon"))
+
+(defcommand icedove () () 
+  "Run or switch to IceDove."
+  (run-or-raise "icedove" '(:class "Icedove")))
+
+(defcommand minecraft () () 
+ "Run or switch to Minecraft."
+ (run-or-raise "minecraft" '(:class "Minecraft")))
+
+
+;; (defmacro run-raise (name)
+;;   `(defcommand ,name () ()
+;;    (run-or-raise ",name" '(:class ",name"))))
+
+
+(defparameter key-lang ())
+(defcommand us () ()
+  "Enable US keyboard layout"
+  (stumpwm::run-shell-command "setxkbmap -layout us -option ctrl:nocaps")
+  (setq key-lang "no") "US layout")
+
+(defcommand no () ()
+  "Enable NO keyboard layout"
+  (stumpwm::run-shell-command "setxkbmap -layout no -option ctrl:nocaps")
+  (setq key-lang "us") "NO layout")
+
+(defcommand switch-key-layout () ()
+  "Switch current keyboard layout"
+  (stumpwm::eval-command key-lang))
+(us)
+
+(defcommand m () ()
+  "Set mouse sensitivity"
+  (stumpwm::run-shell-command "xset m 4"))
+(m)
+
+
+(run-shell-command "nm-applet")
+(run-shell-command "/usr/bin/trayer --SetDockType false --transparent true --expand false --align right &")
+(run-shell-command "emacs --daemon")
+;(stumpwm::run-shell-command "bluetooth-applet")
+(stumpwm::run-shell-command "gnome-volume-control-applet")
+(stumpwm::run-shell-command "gnome-power-manager")
+(stumpwm::run-shell-command "system-config-printer-applet")
+(stumpwm::run-shell-command "dropbox start -i")
+(stumpwm::run-shell-command "gnome-power-manager")
+
+
+(define-key *top-map* (kbd "M-C-t") "exec gnome-terminal")
+(define-key *top-map* (kbd "M-F2") "exec")
+
+(define-key *top-map* (kbd "s-Up") "move-window up")
+(define-key *top-map* (kbd "s-Left") "move-window left")
+(define-key *top-map* (kbd "s-Down") "move-window down")
+(define-key *top-map* (kbd "s-Right") "move-window right")
+(define-key *root-map* (kbd "Delete") "repack-window-numbers")
+(define-key *root-map* (kbd "I") "show-window-properties")
+
+(defcommand split-to-right () () (run-commands "hsplit" "move-window right"))
+
+(define-key *top-map* (kbd "C-s-Up") "only")
+(define-key *top-map* (kbd "C-s-Left") "hsplit")
+(define-key *top-map* (kbd "C-s-Down") "vsplit")
+(define-key *top-map* (kbd "C-s-Right") "split-to-right")
+
+
+(define-key *root-map* (kbd "0") "remove")
+(define-key *root-map* (kbd "1") "only")  
+(define-key *root-map* (kbd "2") "vsplit")
+(define-key *root-map* (kbd "3") "hsplit")
+(define-key *root-map* (kbd "C-F1") "switch-key-layout")
+
+(define-key *root-map* (kbd "C-Left") "prev-in-frame")
+(define-key *root-map* (kbd "C-Right") "next-in-frame")
+
+(define-key *root-map* (kbd "c") "exec gnome-terminal")
+(define-key *root-map* (kbd "C-c") "exec gnome-terminal")
+
+(define-key *root-map* (kbd "e") "icedove")
+(define-key *top-map* (kbd "M-C-e") "emacs")
+(define-key *root-map* (kbd "C-e") "icedove")
+(define-key *root-map* (kbd "C-f") "opera")
+(define-key *root-map* (kbd "C-m") "minecraft")
+(define-key *root-map* (kbd "C-s") "spotify")
+
+(define-key *root-map* (kbd "C-TAB") "gnext")
+(define-key *root-map* (kbd "TAB") "gprev")
+(define-key *root-map* (kbd "C-w") "vgroups")
+(define-key *root-map* (kbd "w") "windowlist")
+(define-key *root-map* (kbd "l") "exec xtrlock")
+
+(defcommand reinit () () (run-commands "reload" "loadrc"))
+(defcommand quit-proper () () (run-commands "exec killall emacs" "exec killall nm-applet" "quit"))
+;(define-key *root-map* (kbd "C-x") "quit-proper")
+;(define-key *root-map* (kbd "C-r") "reinit")
+
+
+(gnewbg "Emacs")
+;(gnewbg "Eclipse")
+(gnewbg-float "Floating")
+
+;gg(setq *startup-message* (get-random-msg *beskjeder*))
