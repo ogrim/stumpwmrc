@@ -80,22 +80,15 @@
  (run-or-raise "minecraft" '(:class "Minecraft")))
 
 
-;; (defmacro run-raise (name)
-;;   `(defcommand ,name () ()
-;;    (run-or-raise ",name" '(:class ",name"))))
-
-
 (defparameter key-lang ())
 (defcommand us () ()
   "Enable US keyboard layout"
   (stumpwm::run-shell-command "setxkbmap -layout us -option ctrl:nocaps")
   (setq key-lang "no") "US layout")
-
 (defcommand no () ()
   "Enable NO keyboard layout"
   (stumpwm::run-shell-command "setxkbmap -layout no -option ctrl:nocaps")
   (setq key-lang "us") "NO layout")
-
 (defcommand switch-key-layout () ()
   "Switch current keyboard layout"
   (stumpwm::eval-command key-lang))
@@ -171,4 +164,4 @@
 ;(gnewbg "Eclipse")
 (gnewbg-float "Floating")
 
-;gg(setq *startup-message* (get-random-msg *beskjeder*))
+(setq *startup-message* (get-random-msg *beskjeder*))
