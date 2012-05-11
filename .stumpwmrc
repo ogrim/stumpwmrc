@@ -7,7 +7,7 @@
 (set-prefix-key (kbd "C-q"))
 (setf *mouse-focus-policy* :click)
 
-(defvar *beskjeder* 
+(defvar *beskjeder*
   (list
    "Live long and prosper"
    "By your command"
@@ -32,11 +32,11 @@
  (swank:create-server :port 4006
                       :style swank:*communication-style*
                       :dont-close t)
- (echo-string (current-screen) 
+ (echo-string (current-screen)
 	       "Starting swank. M-x slime-connect RET RET, then (in-package stumpwm)."))
 (swank)
 
-(defun get-random-msg (list) 
+(defun get-random-msg (list)
   (setf *random-state* (make-random-state t))
   (nth (random (length list)) list))
 
@@ -54,7 +54,7 @@
 		     (run-commands "gprev"))))))
 
 
-(defcommand opera () () 
+(defcommand opera () ()
   "Run or switch to Opera."
   (run-or-raise "opera" '(:class "Opera")))
 
@@ -71,11 +71,11 @@
   (stumpwm::run-shell-command "killall emacs")
   (stumpwm::run-shell-command "emacs --daemon"))
 
-(defcommand icedove () () 
+(defcommand icedove () ()
   "Run or switch to IceDove."
   (run-or-raise "icedove" '(:class "Icedove")))
 
-(defcommand minecraft () () 
+(defcommand minecraft () ()
  "Run or switch to Minecraft."
  (run-or-raise "minecraft" '(:class "Minecraft")))
 
@@ -98,6 +98,11 @@
   "Set mouse sensitivity"
   (stumpwm::run-shell-command "xset m 4"))
 (m)
+
+(defcommand k () ()
+  "Set keyboard rate"
+  (stumpwm::run-shell-command "xset r rate 210 35"))
+(k)
 
 
 (run-shell-command "nm-applet")
@@ -130,7 +135,7 @@
 
 
 (define-key *root-map* (kbd "0") "remove")
-(define-key *root-map* (kbd "1") "only")  
+(define-key *root-map* (kbd "1") "only")
 (define-key *root-map* (kbd "2") "vsplit")
 (define-key *root-map* (kbd "3") "hsplit")
 (define-key *root-map* (kbd "C-F1") "switch-key-layout")
