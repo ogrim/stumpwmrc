@@ -66,6 +66,10 @@
   "Start Emacs or switch to it, if it is already running."
   (run-or-raise "emacsclient -c" '(:class "Emacs")))
 
+(defcommand tmux () ()
+  "Start tmux of switch to it, if it is already running."
+  (run-or-raise "gnome-terminal -e tmux" '(:class "Gnome-terminal" :title "Terminal")))
+
 (defcommand restart-emacs () ()
   "Kill the Emacs process, and start it in daemon mode"
   (stumpwm::run-shell-command "killall emacs")
@@ -148,6 +152,7 @@
 
 (define-key *root-map* (kbd "e") "icedove")
 (define-key *top-map* (kbd "M-C-e") "emacs")
+(define-key *top-map* (kbd "M-C-w") "tmux")
 (define-key *root-map* (kbd "C-e") "icedove")
 (define-key *root-map* (kbd "C-f") "opera")
 (define-key *root-map* (kbd "C-m") "minecraft")
